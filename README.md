@@ -5,10 +5,15 @@
 **A production-grade Retrieval-Augmented Generation (RAG) application for conversational document question answering**
 
 [!\[Python](https://img.shields.io/badge/Python-3.10.11-3776AB?style=flat-square&logo=python&logoColor=white)](https://python.org)
+
 [!\[Streamlit](https://img.shields.io/badge/Streamlit-1.40+-FF4B4B?style=flat-square&logo=streamlit&logoColor=white)](https://streamlit.io)
+
 [!\[LangChain](https://img.shields.io/badge/LangChain-1.3.9-1C3C3C?style=flat-square)](https://langchain.com)
+
 [!\[ChromaDB](https://img.shields.io/badge/ChromaDB-0.5+-F97316?style=flat-square)](https://trychroma.com)
+
 [!\[Gemini](https://img.shields.io/badge/Gemini-2.5_Flash-4285F4?style=flat-square&logo=google&logoColor=white)](https://ai.google.dev)
+
 [!\[License](https://img.shields.io/badge/License-MIT-22C55E?style=flat-square)](LICENSE)
 
 </div>

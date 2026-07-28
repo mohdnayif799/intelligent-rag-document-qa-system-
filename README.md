@@ -145,39 +145,39 @@ The following sequence illustrates how a user query travels through the Retrieva
 
 User
 
-&#x20;↓
+↓
 
 Upload Documents
 
-&#x20;↓
+↓
 
 Chunking
 
-&#x20;↓
+↓
 
 Embeddings
 
-&#x20;↓
+↓
 
 ChromaDB
 
-&#x20;↓
+↓
 
 Question
 
-&#x20;↓
+↓
 
 Query Rewriter
 
-&#x20;↓
+↓
 
 MMR Retrieval
 
-&#x20;↓
+↓
 
 Gemini
 
-&#x20;↓
+↓
 
 Answer + Citations
 

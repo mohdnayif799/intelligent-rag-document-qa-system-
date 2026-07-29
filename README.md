@@ -34,7 +34,7 @@ Each conversation is an isolated workspace. Switching between chats restores the
 
 ### Conversational Q\&A Across Multiple Documents
 
-"C:\\Users\\Muhammed Nayifuddin\\rag\_qa\_system\\Images\\Screenshot 2026-07-27 223927.png"
+Images/Screenshot 2026-07-27 223927.png
 
 *Querying across three simultaneously indexed documents — a DOCX question bank, a PPTX presentation, and a plain text file — in a single chat session.*
 
@@ -42,7 +42,8 @@ Each conversation is an isolated workspace. Switching between chats restores the
 
 ### Conversational Context Resolution
 
-"C:\\Users\\Muhammed Nayifuddin\\rag\_qa\_system\\Images\\Screenshot 2026-07-27 224001.png"
+Images/Screenshot 2026-07-27 224001.png
+
 
 *"Tell me about those planets" correctly resolves the pronoun reference from the previous exchange without any explicit document mention. The query rewriter expands "those" to "the eight planets in our solar system" before hitting the retriever.*
 
@@ -50,7 +51,9 @@ Each conversation is an isolated workspace. Switching between chats restores the
 
 ### Multi-Chat Isolation
 
-"C:\\Users\\Muhammed Nayifuddin\\rag\_qa\_system\\Images\\Screenshot 2026-07-27 224229.png"
+
+
+Images/Screenshot 2026-07-27 224229.png
 
 *Two independent chats with separate document contexts. The active chat is highlighted with an indigo accent. Switching chats restores the full conversation and its associated vector store without re-uploading or reprocessing.*
 
@@ -58,7 +61,8 @@ Each conversation is an isolated workspace. Switching between chats restores the
 
 ### Source Citations
 
-"C:\\Users\\Muhammed Nayifuddin\\rag\_qa\_system\\Images\\Screenshot 2026-07-27 224019.png"
+
+Images/Screenshot 2026-07-27 224019.png
 
 *Every answer includes inline source citations with exact locations — page numbers for PDFs, slide numbers for PPTX, character offsets for plain text. An expandable panel shows the retrieved chunks verbatim.*
 

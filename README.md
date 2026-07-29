@@ -87,59 +87,57 @@ Each conversation is an isolated workspace. Switching between chats restores the
 
 "C:\\Users\\Muhammed Nayifuddin\\rag\_qa\_system\\Images\\Architecture.png"
 flowchart TD
-    User(\\\\\\\["👤 User"])
+    User(["👤 User"])
 
-    subgraph UI\\\\\\\["Streamlit Interface"]
-        direction TB
-        Sidebar\\\\\\\["Sidebar\\\\\\\\nFile Upload · Model Select · Chat List"]
-        ChatArea\\\\\\\["Chat Area\\\\\\\\nMessage History · Input · Citations"]
-    end
+    flowchart LR
 
-    subgraph ChatMgr\\\\\\\["Multi-Chat Manager (st.session\\\\\\\_state)"]
-        direction LR
-        C1\\\\\\\["Chat 1\\\\\\\\nDocs · History · Cache · VectorStore"]
-        C2\\\\\\\["Chat 2\\\\\\\\nDocs · History · Cache · VectorStore"]
-        Cn\\\\\\\["Chat N\\\\\\\\n..."]
-    end
+subgraph UI["Streamlit Interface"]
+    direction TB
+    Sidebar["Sidebar<br/>File Upload · Model Select · Chat List"]
+    ChatArea["Chat Area<br/>Message History · Input · Citations"]
+end
 
-    subgraph Ingestion\\\\\\\["Document Ingestion Pipeline"]
-        direction TB
-        Loader\\\\\\\["Format Router\\\\\\\\nPDF · DOCX · PPTX · TXT · MD"]
-        OCR\\\\\\\["OCR Fallback\\\\\\\\nEasyOCR + PyMuPDF\\\\\\\\n(scanned pages only)"]
-        Splitter\\\\\\\["RecursiveCharacterTextSplitter\\\\\\\\nchunk\\\\\\\_size=1000, overlap=200"]
-    end
+subgraph ChatMgr["Multi-Chat Manager (st.session_state)"]
+    direction LR
+    C1["Chat 1<br/>Docs · History · Cache · VectorStore"]
+    C2["Chat 2<br/>Docs · History · Cache · VectorStore"]
+    Cn["Chat N<br/>..."]
+end
 
-    subgraph VectorLayer\\\\\\\["Vector Layer (per chat)"]
-        Embedder\\\\\\\["HuggingFace Embeddings\\\\\\\\nall-MiniLM-L6-v2 · CPU"]
-        Chroma\\\\\\\["ChromaDB\\\\\\\\nPersisted per chat"]
-        MMR\\\\\\\["MMR Retriever\\\\\\\\nfetch\\\\\\\_k=20 · k=5 · λ=0.6"]
-    end
+subgraph Ingestion["Document Ingestion Pipeline"]
+    direction TB
+    Loader["Format Router<br/>PDF · DOCX · PPTX · TXT · MD"]
+    OCR["OCR Fallback<br/>EasyOCR + PyMuPDF<br/>(scanned pages only)"]
+    Splitter["RecursiveCharacterTextSplitter<br/>chunk_size=1000, overlap=200"]
+end
 
-    subgraph LLMLayer\\\\\\\["LLM Layer (Google Gemini 2.5 Flash)"]
-        Rewriter\\\\\\\["Query Rewriter\\\\\\\\nResolves pronouns \\\\\\\& references"]
-        Generator\\\\\\\["Answer Generator\\\\\\\\nContext + History → Grounded Answer"]
-    end
+subgraph VectorLayer["Vector Layer (per chat)"]
+    Embedder["HuggingFace Embeddings<br/>all-MiniLM-L6-v2 · CPU"]
+    Chroma["ChromaDB<br/>Persisted per chat"]
+    MMR["MMR Retriever<br/>fetch_k=20 · k=5 · λ=0.6"]
+end
 
-    Citations\\\\\\\["📄 Inline Source Citations\\\\\\\\nPage · Slide · Chunk"]
+subgraph LLMLayer["LLM Layer (Google Gemini 2.5 Flash)"]
+    Rewriter["Query Rewriter<br/>Resolves pronouns & references"]
+    Generator["Answer Generator<br/>Context + History → Grounded Answer"]
+end
 
-    User --> UI
-    Sidebar -->|"Upload"| Ingestion
-    Loader --> OCR --> Splitter
-    Splitter --> Embedder --> Chroma
-    Chroma --> MMR
-    UI --> ChatMgr
-    ChatMgr --> MMR
-    ChatMgr -->|"lc\\\\\\\_history"| Rewriter
-    MMR --> Rewriter
-    Rewriter -->|"standalone query"| MMR
-    MMR -->|"top-5 chunks"| Generator
-    ChatMgr -->|"conversation history"| Generator
-    Generator --> ChatArea
-    Generator --> Citations
-```
+Citations["📄 Inline Source Citations<br/>Page · Slide · Chunk"]
 
-\---
-
+User --> UI
+Sidebar -->|"Upload"| Ingestion
+Loader --> OCR --> Splitter
+Splitter --> Embedder --> Chroma
+Chroma --> MMR
+UI --> ChatMgr
+ChatMgr --> MMR
+ChatMgr -->|"lc_history"| Rewriter
+MMR --> Rewriter
+Rewriter -->|"standalone query"| MMR
+MMR -->|"top-5 chunks"| Generator
+ChatMgr -->|"conversation history"| Generator
+Generator --> ChatArea
+Generator --> Citations
 ## Workflow
 
 ```## 🔄 Workflow
@@ -211,7 +209,7 @@ Answer + Citations
     else Cache miss
         UI->>Rewriter: Question + conversation history
         Rewriter-->>UI: Standalone, reference-resolved query
-        UI->>Retriever: MMR search (fetch\\\\\\\_k=20, k=5)
+        UI->>Retriever: MMR search (fetch_k=20, k=5)
         Retriever-->>UI: Top-5 diverse chunks + metadata
         UI->>LLM: Chunks + history + original question
         LLM-->>UI: Grounded answer
@@ -231,7 +229,7 @@ Answer + Citations
 |**"tell me about them" returns no results**|Retriever received the raw follow-up without knowing what "them" referred to|Two-pass pipeline: query rewriter resolves references first, then retriever searches the expanded query|
 |**LLM says "I don't have information" despite correct retrieval**|QA prompt received original ambiguous question with no conversation context|Conversation history passed to both the rewriter and the answer generator|
 |**All TXT and DOCX pages show as page 0**|TextLoader and Docx2txtLoader have no page structure; placeholder `page=0` was set|Display logic branches on file extension: PDFs show `Page N`, PPTX shows `Slide N`, others show `Chunk N` or character offset|
-|**Documents from Chat A visible in Chat B uploader**|Streamlit file uploader widget maintains state across rerenders|Per-chat uploader key: `key=f"uploader\\\\\\\_{chat\\\\\\\_id}"` creates isolated widget instances|
+|**Documents from Chat A visible in Chat B uploader**|Streamlit file uploader widget maintains state across rerenders|Per-chat uploader key: `key=f"uploader_{chat_id}"` creates isolated widget instances|
 |**Conversational titles like "New Chat"**|Auto-title was a simple string truncation of the first question|Single Gemini call on first message: "Generate a 3–5 word title for this question"|
 |**Scanned PDFs return empty chunks**|PyPDFLoader cannot extract text from image-only pages|Page-level OCR fallback: pages below 20-character threshold are rendered via PyMuPDF and processed by EasyOCR|
 |**WinError 32 on Windows during reprocessing**|Streamlit-cached Chroma connection holds SQLite file handle; deletion fails|Build each upload into a new uniquely-timestamped directory; never delete an open connection|
@@ -250,22 +248,20 @@ intelligent-rag-document-qa-system/
 ├── README.md
 │
 ├── src/
-│   ├── \\\\\\\_\\\\\\\_init\\\\\\\_\\\\\\\_.py
-│   ├── data\\\\\\\_ingestion.py       # Format router, OCR fallback, chunking
-│   ├── vector\\\\\\\_store.py         # ChromaDB create/append/load, MMR setup
-│   └── rag\\\\\\\_chain.py            # Query rewriter + answer generator (google.genai)
+│   ├── init\.py
+│   ├── data\ingestion.py       # Format router, OCR fallback, chunking
+│   ├── vector\store.py         # ChromaDB create/append/load, MMR setup
+│   └── rag\_chain.py            # Query rewriter + answer generator (google.genai)
 │
-├── chroma\\\\\\\_db\\\\\\\_\\\\\\\*/                # Per-chat vector stores (auto-created, gitignored)
+├── chroma\_db*              # Per-chat vector stores (auto-created, gitignored)
 │
 └── assets/
     └── screenshots/
-        ├── multi\\\\\\\_doc\\\\\\\_qa.png
-        ├── conversational\\\\\\\_context.png
-        ├── multi\\\\\\\_chat.png
+        ├── multi\_doc\_qa.png
+        ├── conversational\\_context.png
+        ├── multi\_chat.png
         └── citations.png
-```
 
-\---
 
 ## Installation
 
@@ -285,7 +281,7 @@ cd intelligent-rag-document-qa-system
 python -m venv venv
 
 # Windows
-venv\\\\\\\\Scripts\\\\\\\\activate
+venv\Scripts\activate
 
 # macOS / Linux
 source venv/bin/activate
@@ -294,7 +290,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-> \\\\\\\*\\\\\\\*Note:\\\\\\\*\\\\\\\* The first run downloads the `all-MiniLM-L6-v2` embedding model (\\\\\\\~90 MB) and EasyOCR weights. Subsequent runs use the local cache and start significantly faster.
+ The first run downloads the `all-MiniLM-L6-v2` embedding model (~90 MB) and EasyOCR weights. Subsequent runs use the local cache and start significantly faster.
 
 ### Environment Variables
 
@@ -307,8 +303,8 @@ cp .env.example .env
 `.env.example`:
 
 ```env
-GEMINI\\\\\\\_API\\\\\\\_KEY=your\\\\\\\_gemini\\\\\\\_api\\\\\\\_key\\\\\\\_here
-```
+GEMINI_API\_KEY=your__gemini api_key_here
+
 
 Get your free key at [aistudio.google.com](https://aistudio.google.com) → **Get API Key** → **Create API key in new project**.
 
@@ -345,7 +341,7 @@ The repository includes `evaluate.py`, a custom LLM-as-judge evaluation script t
 python evaluate.py
 ```
 
-Results are saved to `ragas\\\\\\\_baseline.csv`. Run before and after adding the reranker to measure the improvement delta.
+Results are saved to `ragas_baseline.csv`. Run before and after adding the reranker to measure the improvement delta.
 
 \---
 
@@ -361,7 +357,7 @@ Most RAG tutorials and demo projects make the same simplifying assumptions: one 
 
 **Per-chat isolation** required Streamlit-specific engineering: each chat's file uploader has a unique widget key tied to the chat ID, which causes Streamlit to instantiate a fresh, empty uploader when switching chats. Without this, the file list from one chat persisted visually into another.
 
-The architecture is modular by design. `data\\\\\\\_ingestion.py`, `vector\\\\\\\_store.py`, and `rag\\\\\\\_chain.py` are independent of each other and of the UI. Swapping the LLM from Gemini to another provider, or replacing ChromaDB with a different vector store, requires changing one file.
+The architecture is modular by design. `data_ingestion.py`, `vector_store.py`, and `rag_chain.py` are independent of each other and of the UI. Swapping the LLM from Gemini to another provider, or replacing ChromaDB with a different vector store, requires changing one file.
 
 \---
 

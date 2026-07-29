@@ -2,23 +2,7 @@
 
 # Intelligent Document QA System
 
-**A production-grade Retrieval-Augmented Generation (RAG) application for conversational document question answering**
 
-[!\[Python](https://img.shields.io/badge/Python-3.10.11-3776AB?style=flat-square&logo=python&logoColor=white)](https://python.org)
-
-[!\[Streamlit](https://img.shields.io/badge/Streamlit-1.40+-FF4B4B?style=flat-square&logo=streamlit&logoColor=white)](https://streamlit.io)
-
-[!\[LangChain](https://img.shields.io/badge/LangChain-1.3.9-1C3C3C?style=flat-square)](https://langchain.com)
-
-[!\[ChromaDB](https://img.shields.io/badge/ChromaDB-0.5+-F97316?style=flat-square)](https://trychroma.com)
-
-[!\[Gemini](https://img.shields.io/badge/Gemini-2.5_Flash-4285F4?style=flat-square&logo=google&logoColor=white)](https://ai.google.dev)
-
-[!\[License](https://img.shields.io/badge/License-MIT-22C55E?style=flat-square)](LICENSE)
-
-</div>
-
-\---
 
 ## Overview
 
@@ -97,53 +81,63 @@ flowchart TD
 
     flowchart LR
 
-subgraph UI["Streamlit Interface"]
+flowchart TB
+
+subgraph UI["🖥️ Streamlit Interface"]
     direction TB
-    Sidebar["Sidebar<br/>File Upload · Model Select · Chat List"]
-    ChatArea["Chat Area<br/>Message History · Input · Citations"]
+    Sidebar["Sidebar<br/>File Upload • Model Selection • Chat Management"]
+    ChatArea["Chat Interface<br/>Conversation • Input • Source Citations"]
 end
 
-subgraph ChatMgr["Multi-Chat Manager (st.session_state)"]
+subgraph Session["💾 Multi-Chat Session Manager"]
     direction LR
-    C1["Chat 1<br/>Docs · History · Cache · VectorStore"]
-    C2["Chat 2<br/>Docs · History · Cache · VectorStore"]
-    Cn["Chat N<br/>..."]
+    Chat1["Chat 1"]
+    Chat2["Chat 2"]
+    ChatN["Chat N"]
 end
 
-subgraph Ingestion["Document Ingestion Pipeline"]
+subgraph Processing["📄 Document Processing"]
     direction TB
-    Loader["Format Router<br/>PDF · DOCX · PPTX · TXT · MD"]
-    OCR["OCR Fallback<br/>EasyOCR + PyMuPDF<br/>(scanned pages only)"]
-    Splitter["RecursiveCharacterTextSplitter<br/>chunk_size=1000, overlap=200"]
+    Loader["Document Loader<br/>PDF • DOCX • PPTX • TXT • MD"]
+    OCR["OCR Processing<br/>EasyOCR + PyMuPDF"]
+    Splitter["Recursive Character Splitter<br/>Chunk Size: 1000 • Overlap: 200"]
 end
 
-subgraph VectorLayer["Vector Layer (per chat)"]
-    Embedder["HuggingFace Embeddings<br/>all-MiniLM-L6-v2 · CPU"]
-    Chroma["ChromaDB<br/>Persisted per chat"]
-    MMR["MMR Retriever<br/>fetch_k=20 · k=5 · λ=0.6"]
+subgraph Retrieval["🧠 Semantic Retrieval"]
+    direction TB
+    Embedder["HuggingFace Embeddings<br/>all-MiniLM-L6-v2"]
+    VectorDB["ChromaDB<br/>Per-Chat Vector Store"]
+    Retriever["MMR Retriever<br/>Top-5 Context Retrieval"]
 end
 
-subgraph LLMLayer["LLM Layer (Google Gemini 2.5 Flash)"]
-    Rewriter["Query Rewriter<br/>Resolves pronouns & references"]
-    Generator["Answer Generator<br/>Context + History → Grounded Answer"]
+subgraph AI["🤖 AI Reasoning Pipeline"]
+    direction TB
+    Rewriter["Query Rewriter<br/>Context-Aware Query Generation"]
+    Generator["Gemini 2.5 Flash<br/>Grounded Answer Generation"]
 end
 
-Citations["📄 Inline Source Citations<br/>Page · Slide · Chunk"]
+Output["📚 Response with Inline Source Citations"]
+
+User((👤 User))
 
 User --> UI
-Sidebar -->|"Upload"| Ingestion
-Loader --> OCR --> Splitter
-Splitter --> Embedder --> Chroma
-Chroma --> MMR
-UI --> ChatMgr
-ChatMgr --> MMR
-ChatMgr -->|"lc_history"| Rewriter
-MMR --> Rewriter
-Rewriter -->|"standalone query"| MMR
-MMR -->|"top-5 chunks"| Generator
-ChatMgr -->|"conversation history"| Generator
-Generator --> ChatArea
-Generator --> Citations
+
+Sidebar --> Loader
+Loader --> OCR
+OCR --> Splitter
+Splitter --> Embedder
+Embedder --> VectorDB
+VectorDB --> Retriever
+
+ChatArea --> Session
+Session --> Rewriter
+Retriever --> Rewriter
+Rewriter --> Retriever
+Retriever --> Generator
+Session --> Generator
+
+Generator --> Output
+Output --> ChatArea
 ## Workflow
 
 ```## 🔄 Workflow
@@ -205,7 +199,7 @@ Answer + Citations
     User->>UI: Upload document(s)
     UI->>UI: Detect format, extract text
     UI->>UI: Chunk with RecursiveCharacterTextSplitter
-    UI->>Retriever: Embed \\\\\\\& index chunks (append or create)
+    UI->>Retriever: Embed & index chunks (append or create)
     UI-->>User: ✅ N chunks indexed
 
     User->>UI: Ask question
@@ -230,7 +224,7 @@ Answer + Citations
 
 |Challenge|Root Cause|Solution|
 |-|-|-|
-|**Documents disappearing after second upload**|Two concurrent SQLite clients on the same ChromaDB file caused write conflicts on Windows|Clear `@st.cache\\\\\\\_resource` connection and run `gc.collect()` before opening append client; sleep 400ms for handle release|
+|**Documents disappearing after second upload**|Two concurrent SQLite clients on the same ChromaDB file caused write conflicts on Windows|Clear `@st.cache_resource` connection and run `gc.collect()` before opening append client; sleep 400ms for handle release|
 |**All retrieved chunks from one document**|Standard cosine similarity returns top-k nearest neighbors, which cluster on one source|MMR retrieval: fetch 20 candidates, select 5 maximally relevant AND diverse|
 |**"tell me about them" returns no results**|Retriever received the raw follow-up without knowing what "them" referred to|Two-pass pipeline: query rewriter resolves references first, then retriever searches the expanded query|
 |**LLM says "I don't have information" despite correct retrieval**|QA prompt received original ambiguous question with no conversation context|Conversation history passed to both the rewriter and the answer generator|

@@ -62,7 +62,7 @@ Each conversation is an isolated workspace. Switching between chats restores the
 
 ### Source Citations
 
-<img width="1916" height="1006" alt="Screenshot 2026-07-27 224019" src="https://github.com/user-attachments/assets/88fd4cd5-dce4-4b18-86f3-275f357beb3e" />
+<img width="1719" height="915" alt="ChatGPT Image Jul 29, 2026, 04_13_31 PM" src="https://github.com/user-attachments/assets/9f1ad99a-84c0-4e74-a242-5acccfdba52f" />
 
 
 *Every answer includes inline source citations with exact locations — page numbers for PDFs, slide numbers for PPTX, character offsets for plain text. An expandable panel shows the retrieved chunks verbatim.*

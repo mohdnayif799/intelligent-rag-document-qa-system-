@@ -85,7 +85,8 @@ Each conversation is an isolated workspace. Switching between chats restores the
 
 ## Architecture
 
-"C:\\Users\\Muhammed Nayifuddin\\rag\_qa\_system\\Images\\Architecture.png"
+Images/Architecture.png
+
 flowchart TD
     User(["👤 User"])
 

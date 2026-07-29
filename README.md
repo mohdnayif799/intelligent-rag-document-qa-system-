@@ -34,7 +34,7 @@ Each conversation is an isolated workspace. Switching between chats restores the
 
 ### Conversational Q\&A Across Multiple Documents
 
-Images/Screenshot 2026-07-27 223927.png
+<img width="1847" height="851" alt="Screenshot 2026-07-27 223927" src="https://github.com/user-attachments/assets/434756e0-c0e6-4b6e-801a-b32810e53da8" />
 
 *Querying across three simultaneously indexed documents — a DOCX question bank, a PPTX presentation, and a plain text file — in a single chat session.*
 

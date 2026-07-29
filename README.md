@@ -42,7 +42,8 @@ Each conversation is an isolated workspace. Switching between chats restores the
 
 ### Conversational Context Resolution
 
-Images/Screenshot 2026-07-27 224001.png
+<img width="1916" height="1006" alt="Screenshot 2026-07-27 224019" src="https://github.com/user-attachments/assets/88fd4cd5-dce4-4b18-86f3-275f357beb3e" />
+
 
 
 *"Tell me about those planets" correctly resolves the pronoun reference from the previous exchange without any explicit document mention. The query rewriter expands "those" to "the eight planets in our solar system" before hitting the retriever.*
@@ -51,9 +52,9 @@ Images/Screenshot 2026-07-27 224001.png
 
 ### Multi-Chat Isolation
 
+<img width="1912" height="1020" alt="Screenshot 2026-07-27 224229" src="https://github.com/user-attachments/assets/9bc35f14-9f0e-4626-bc22-c5ddfcbe3737" />
 
 
-Images/Screenshot 2026-07-27 224229.png
 
 *Two independent chats with separate document contexts. The active chat is highlighted with an indigo accent. Switching chats restores the full conversation and its associated vector store without re-uploading or reprocessing.*
 
@@ -61,8 +62,8 @@ Images/Screenshot 2026-07-27 224229.png
 
 ### Source Citations
 
+<img width="1916" height="1006" alt="Screenshot 2026-07-27 224019" src="https://github.com/user-attachments/assets/88fd4cd5-dce4-4b18-86f3-275f357beb3e" />
 
-Images/Screenshot 2026-07-27 224019.png
 
 *Every answer includes inline source citations with exact locations — page numbers for PDFs, slide numbers for PPTX, character offsets for plain text. An expandable panel shows the retrieved chunks verbatim.*
 
@@ -89,7 +90,7 @@ Images/Screenshot 2026-07-27 224019.png
 
 ## Architecture
 
-Images/Architecture.png
+<img width="1536" height="1024" alt="Architecture" src="https://github.com/user-attachments/assets/6fa78d67-7946-47c7-964a-687bf5c4f6e1" />
 
 flowchart TD
     User(["👤 User"])

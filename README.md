@@ -84,36 +84,56 @@ flowchart TD
 flowchart TB
 
 subgraph UI["🖥️ Streamlit Interface"]
+
     direction TB
     Sidebar["Sidebar<br/>File Upload • Model Selection • Chat Management"]
+    
     ChatArea["Chat Interface<br/>Conversation • Input • Source Citations"]
+    
 end
 
 subgraph Session["💾 Multi-Chat Session Manager"]
+
     direction LR
     Chat1["Chat 1"]
+    
     Chat2["Chat 2"]
+    
     ChatN["Chat N"]
 end
 
 subgraph Processing["📄 Document Processing"]
+
     direction TB
+    
     Loader["Document Loader<br/>PDF • DOCX • PPTX • TXT • MD"]
+    
     OCR["OCR Processing<br/>EasyOCR + PyMuPDF"]
+    
     Splitter["Recursive Character Splitter<br/>Chunk Size: 1000 • Overlap: 200"]
+    
 end
 
 subgraph Retrieval["🧠 Semantic Retrieval"]
+
     direction TB
+    
     Embedder["HuggingFace Embeddings<br/>all-MiniLM-L6-v2"]
+    
     VectorDB["ChromaDB<br/>Per-Chat Vector Store"]
+    
     Retriever["MMR Retriever<br/>Top-5 Context Retrieval"]
+    
 end
 
 subgraph AI["🤖 AI Reasoning Pipeline"]
+
     direction TB
+    
     Rewriter["Query Rewriter<br/>Context-Aware Query Generation"]
+    
     Generator["Gemini 2.5 Flash<br/>Grounded Answer Generation"]
+    
 end
 
 Output["📚 Response with Inline Source Citations"]
